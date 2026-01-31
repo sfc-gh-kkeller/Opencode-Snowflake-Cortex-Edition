@@ -10,6 +10,16 @@
 <p align="center"><strong>Snowflake Cortex Edition</strong></p>
 <p align="center">Community fork for Snowflake Cortex compatibility</p>
 <p align="center">The open source AI coding agent.</p>
+
+<pre align="center">
+   .-.
+  /   \
+  \   /
+.-.-.-.
+  /|\
+ / | \
+   |
+</pre>
 <p align="center">
   <a href="https://opencode.ai/discord"><img alt="Discord" src="https://img.shields.io/discord/1391832426048651334?style=flat-square&label=discord" /></a>
   <a href="https://www.npmjs.com/package/opencode-ai"><img alt="npm" src="https://img.shields.io/npm/v/opencode-ai?style=flat-square" /></a>
@@ -42,18 +52,11 @@
 ### Installation
 
 ```bash
-# YOLO
-curl -fsSL https://opencode.ai/install | bash
+# Install from this repo's releases
+curl -fsSL https://github.com/sfc-gh-kkeller/Opecode-Snowflake-Cortex-Edition/releases/latest/download/install.sh | bash
 
 # Package managers
-npm i -g opencode-ai@latest        # or bun/pnpm/yarn
-scoop install opencode             # Windows
-choco install opencode             # Windows
-brew install anomalyco/tap/opencode # macOS and Linux (recommended, always up to date)
-brew install opencode              # macOS and Linux (official brew formula, updated less)
-paru -S opencode-bin               # Arch Linux
-mise use -g opencode               # Any OS
-nix run nixpkgs#opencode           # or github:anomalyco/opencode for latest dev branch
+# Not yet published for this fork. Use the release binaries or build from source below.
 ```
 
 > [!TIP]
