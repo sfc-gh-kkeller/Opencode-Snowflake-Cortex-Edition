@@ -788,10 +788,7 @@ export namespace Provider {
               write: model?.cost?.cache_write ?? existingModel?.cost?.cache.write ?? 0,
             },
           },
-          options: mergeDeep(
-            mergeDeep(existingModel?.options ?? {}, parsed.options?.snowflakeCortex ? { snowflakeCortex: true } : {}),
-            model.options ?? {},
-          ),
+          options: mergeDeep(existingModel?.options ?? {}, model.options ?? {}),
           limit: {
             context: model.limit?.context ?? existingModel?.limit?.context ?? 0,
             output: model.limit?.output ?? existingModel?.limit?.output ?? 0,
@@ -1016,21 +1013,6 @@ export namespace Provider {
               }
             }
             opts.body = JSON.stringify(body)
-          }
-        }
-
-        // Snowflake Cortex compatibility: transform max_tokens to max_completion_tokens
-        // Snowflake's OpenAI-compatible API requires max_completion_tokens instead of max_tokens
-        if (options["snowflakeCortex"] === true && opts.body && opts.method === "POST") {
-          try {
-            const body = JSON.parse(opts.body as string)
-            if (body.max_tokens !== undefined && body.max_completion_tokens === undefined) {
-              body.max_completion_tokens = body.max_tokens
-              delete body.max_tokens
-              opts.body = JSON.stringify(body)
-            }
-          } catch {
-            // If body parsing fails, continue with original request
           }
         }
 

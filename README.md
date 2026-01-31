@@ -57,30 +57,6 @@ nix run nixpkgs#opencode           # or github:anomalyco/opencode for latest dev
 > [!TIP]
 > Remove versions older than 0.1.x before installing.
 
-### Snowflake Cortex Edition
-
-This edition adds Snowflake Cortex compatibility and is intended to make OpenCode work reliably with Cortex’s OpenAI-compatible API.
-It is a community-maintained fork and is not affiliated with the OpenCode team.
-
-How it differs:
-
-- **Snowflake error handling**: Treats Cortex “conversation complete” errors as a normal stop.
-- **Request compatibility**: Maps `max_tokens` → `max_completion_tokens` when using Cortex.
-- **Provider options**: Ensures the `snowflakeCortex` flag is applied consistently to models at runtime.
-
-Quick start:
-
-```bash
-git clone https://github.com/sfc-gh-kkeller/Opecode-Snowflake-Cortex-Edition.git
-cd Opecode-Snowflake-Cortex-Edition
-bun install
-bun dev
-```
-
-Guides:
-
-- [PATCHING.md](./PATCHING.md) — build + patch existing installs
-
 ### Desktop App (BETA)
 
 OpenCode is also available as a desktop application. Download directly from the [releases page](https://github.com/anomalyco/opencode/releases) or [opencode.ai/download](https://opencode.ai/download).
