@@ -11,8 +11,7 @@
 <p align="center">Community fork for Snowflake Cortex compatibility</p>
 <p align="center">The open source AI coding agent.</p>
 <p align="center">
-  <a href="https://brandfetch.com/snowflake.com">
-   <img src=https://upload.wikimedia.org/wikipedia/commons/thumb/f/ff/Snowflake_Logo.svg/1280px-Snowflake_Logo.svg.png" alt="Snowflake Logo">
+   <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/ff/Snowflake_Logo.svg/1280px-Snowflake_Logo.svg.png" alt="Snowflake Logo">
   </a>
 </p>
 <p align="center"><em>Not an official Snowflake or OpenCode project.</em></p>
