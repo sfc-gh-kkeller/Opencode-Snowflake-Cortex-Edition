@@ -220,6 +220,102 @@ function createEventResponse(chunks: unknown[], includeDone = false) {
 }
 
 describe("session.llm.stream", () => {
+  test("sends max_completion_tokens for snowflake cortex models", async () => {
+    const server = state.server
+    if (!server) {
+      throw new Error("Server not initialized")
+    }
+
+    const request = waitRequest(
+      "/chat/completions",
+      new Response(createChatStream("Hello"), {
+        status: 200,
+        headers: { "Content-Type": "text/event-stream" },
+      }),
+    )
+
+    await using tmp = await tmpdir({
+      init: async (dir) => {
+        await Bun.write(
+          path.join(dir, "opencode.json"),
+          JSON.stringify({
+            $schema: "https://opencode.ai/config.json",
+            enabled_providers: ["snowflake-cortex"],
+            provider: {
+              "snowflake-cortex": {
+                name: "Snowflake Cortex",
+                npm: "@ai-sdk/openai-compatible",
+                env: [],
+                models: {
+                  "claude-opus-4-6": {
+                    name: "Claude Opus 4.6",
+                    tool_call: true,
+                    limit: {
+                      context: 200000,
+                      output: 16384,
+                    },
+                  },
+                },
+                options: {
+                  apiKey: "test-key",
+                  baseURL: `${server.url.origin}/v1`,
+                  snowflakeCortex: true,
+                },
+              },
+            },
+          }),
+        )
+      },
+    })
+
+    await Instance.provide({
+      directory: tmp.path,
+      fn: async () => {
+        const resolved = await Provider.getModel("snowflake-cortex", "claude-opus-4-6")
+        const sessionID = "session-test-snowflake-1"
+        const agent = {
+          name: "test",
+          mode: "primary",
+          options: {},
+          permission: [{ permission: "*", pattern: "*", action: "allow" }],
+          temperature: 0.2,
+        } satisfies Agent.Info
+
+        const user = {
+          id: "user-snowflake-1",
+          sessionID,
+          role: "user",
+          time: { created: Date.now() },
+          agent: agent.name,
+          model: { providerID: "snowflake-cortex", modelID: resolved.id },
+        } satisfies MessageV2.User
+
+        const stream = await LLM.stream({
+          user,
+          sessionID,
+          model: resolved,
+          agent,
+          system: ["You are a helpful assistant."],
+          abort: new AbortController().signal,
+          messages: [{ role: "user", content: "Hello" }],
+          tools: {},
+        })
+
+        for await (const _ of stream.fullStream) {
+        }
+
+        const capture = await request
+        const body = capture.body
+
+        expect(capture.url.pathname.endsWith("/chat/completions")).toBe(true)
+        expect(body.model).toBe(resolved.api.id)
+        expect(body.stream).toBe(true)
+        expect(body.max_completion_tokens).toBe(ProviderTransform.maxOutputTokens(resolved))
+        expect(body.max_tokens).toBeUndefined()
+      },
+    })
+  })
+
   test("sends temperature, tokens, and reasoning options for openai-compatible models", async () => {
     const server = state.server
     if (!server) {

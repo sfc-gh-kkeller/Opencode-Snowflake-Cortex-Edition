@@ -350,41 +350,43 @@ export namespace SessionProcessor {
           } catch (e: any) {
             // Snowflake Cortex: treat "assistant role in final position" as normal stop
             // This happens when tools are defined but conversation naturally ends
-            const errMsg = e?.message || e?.toString() || ""
+            const errMsg = [e?.message, e?.responseBody, e?.data?.error?.message, e?.toString()].filter(Boolean).join(" ")
             if (errMsg.includes("assistant") && errMsg.includes("final position") && errMsg.includes("tools")) {
               log.info("Snowflake Cortex conversation complete (assistant final position)", {
                 sessionID: input.sessionID,
               })
-              break // Exit normally, not an error
-            }
-
-            log.error("process", {
-              error: e,
-              stack: JSON.stringify(e.stack),
-            })
-            const error = MessageV2.fromError(e, { providerID: input.model.providerID })
-            if (MessageV2.ContextOverflowError.isInstance(error)) {
-              // TODO: Handle context overflow error
-            }
-            const retry = SessionRetry.retryable(error)
-            if (retry !== undefined) {
-              attempt++
-              const delay = SessionRetry.delay(attempt, error.name === "APIError" ? error : undefined)
-              SessionStatus.set(input.sessionID, {
-                type: "retry",
-                attempt,
-                message: retry,
-                next: Date.now() + delay,
+              input.assistantMessage.time.completed = Date.now()
+              await Session.updateMessage(input.assistantMessage)
+              return "stop"
+            } else {
+              log.error("process", {
+                error: e,
+                stack: JSON.stringify(e.stack),
               })
-              await SessionRetry.sleep(delay, input.abort).catch(() => {})
-              continue
+              const error = MessageV2.fromError(e, { providerID: input.model.providerID })
+              if (MessageV2.ContextOverflowError.isInstance(error)) {
+                // TODO: Handle context overflow error
+              }
+              const retry = SessionRetry.retryable(error)
+              if (retry !== undefined) {
+                attempt++
+                const delay = SessionRetry.delay(attempt, error.name === "APIError" ? error : undefined)
+                SessionStatus.set(input.sessionID, {
+                  type: "retry",
+                  attempt,
+                  message: retry,
+                  next: Date.now() + delay,
+                })
+                await SessionRetry.sleep(delay, input.abort).catch(() => {})
+                continue
+              }
+              input.assistantMessage.error = error
+              Bus.publish(Session.Event.Error, {
+                sessionID: input.assistantMessage.sessionID,
+                error: input.assistantMessage.error,
+              })
+              SessionStatus.set(input.sessionID, { type: "idle" })
             }
-            input.assistantMessage.error = error
-            Bus.publish(Session.Event.Error, {
-              sessionID: input.assistantMessage.sessionID,
-              error: input.assistantMessage.error,
-            })
-            SessionStatus.set(input.sessionID, { type: "idle" })
           }
           if (snapshot) {
             const patch = await Snapshot.patch(snapshot)
