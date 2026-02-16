@@ -7,7 +7,7 @@ import { createStore } from "solid-js/store"
 import { useRoute } from "../../context/route"
 
 // Snowflake Cortex Edition POT branding
-const POT_FOOTER = "❄ Snowflake Cortex Proof of Technology (POT) v1.0 | Kevin Keller | based on opencode 1.1.48"
+const POT_FOOTER = "❄ Snowflake Cortex Proof of Technology (POT) v2.0 | Kevin Keller | based on opencode 1.2.5"
 
 export function Footer() {
   const { theme } = useTheme()

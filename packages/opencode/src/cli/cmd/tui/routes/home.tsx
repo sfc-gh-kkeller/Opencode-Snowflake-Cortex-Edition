@@ -140,7 +140,7 @@ export function Home() {
         </box>
         <box flexGrow={1} />
         <box flexShrink={0}>
-          <text fg={theme.textMuted}>❄ Snowflake Cortex POT v1.0 | Kevin Keller | based on opencode 1.1.48</text>
+          <text fg={theme.textMuted}>❄ Snowflake Cortex POT v2.0 | Kevin Keller | based on opencode 1.2.5</text>
         </box>
       </box>
     </>
