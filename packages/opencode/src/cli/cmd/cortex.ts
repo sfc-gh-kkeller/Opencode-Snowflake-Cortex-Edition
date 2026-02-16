@@ -99,7 +99,7 @@ export const CortexInitCommand = cmd({
 
     const modelsInput = await prompts.text({
       message: "Snowflake Cortex models (comma or space separated)",
-      initialValue: "claude-opus-4-6",
+      initialValue: "claude-opus-4-5",
     })
     if (prompts.isCancel(modelsInput)) return
     const models = parseModels(String(modelsInput))

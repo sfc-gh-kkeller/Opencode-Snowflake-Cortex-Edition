@@ -56,7 +56,7 @@ export async function writeCortexConfig(filePath: string, input: SnowflakeConfig
 
   let text = exists ? await fs.readFile(filePath, "utf8") : `{\n  "$schema": "${SCHEMA_URL}"\n}\n`
   const models = normalizeModels(input.models)
-  const modelId = models[0] ?? "claude-opus-4-6"
+  const modelId = models[0] ?? "claude-opus-4-5"
 
   const providerConfig = {
     npm: "@ai-sdk/openai-compatible",

@@ -106,7 +106,7 @@ async function runSnowflakeSetup(dialog: ReturnType<typeof useDialog>, sdk: Retu
   }
 
   const modelsInput = await DialogPrompt.show(dialog, "Snowflake Cortex models", {
-    value: "claude-opus-4-6",
+    value: "claude-opus-4-5",
     placeholder: "comma or space separated",
   })
   if (!modelsInput) return false

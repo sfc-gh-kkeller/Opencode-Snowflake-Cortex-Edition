@@ -146,6 +146,6 @@ Example:
       }
     }
   },
-  "model": "snowflake-cortex/claude-opus-4-6"
+  "model": "snowflake-cortex/claude-opus-4-5"
 }
 ```

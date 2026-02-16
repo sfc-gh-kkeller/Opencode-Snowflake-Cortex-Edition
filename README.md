@@ -113,7 +113,7 @@ Or create `opencode_cortex.json` in your project (or `~/.config/opencode/opencod
       }
     }
   },
-  "model": "snowflake-cortex/claude-opus-4-6"
+  "model": "snowflake-cortex/claude-opus-4-5"
 }
 ```
 
